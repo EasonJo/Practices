@@ -9,10 +9,10 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.hencoder.hencoderpracticedraw7.Utils;
+import static com.hencoder.hencoderpracticedraw7.UtilsKt.dpToPixel;
 
 public class Sample03OfObjectView extends View {
-    public static final float RADIUS = Utils.dpToPixel(20);
+    public static final float RADIUS = dpToPixel(20);
 
     Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
