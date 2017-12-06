@@ -1,5 +1,6 @@
 package com.eason.diffutildemo.adapter
 
+import android.support.annotation.LayoutRes
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -11,14 +12,14 @@ import android.view.ViewGroup
  * Base AbstractAdapter
  * Created by Eason on 2017/12/6.
  */
-abstract class AbstractAdapter<ITEM>(private var data: MutableList<ITEM>, private val resourceID: Int) :
+abstract class AbstractAdapter<ITEM>(private var data: MutableList<ITEM>, @LayoutRes private val resourceID: Int) :
         RecyclerView.Adapter<AbstractAdapter.ViewHolder>() {
     override fun getItemCount(): Int = data.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = data[position]
         holder.itemView.bind(item)
-        Log.i("Eason","item:" + item)
+        Log.i("Eason", "item:" + item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
@@ -33,6 +34,9 @@ abstract class AbstractAdapter<ITEM>(private var data: MutableList<ITEM>, privat
         return holder
     }
 
+    /**
+     * 更新 RecycleView. 使用[DiffUtil]来计算新旧数据的区别,提高刷新效率.
+     */
     fun update(newList: List<ITEM>) {
         updateAdapterWithDiffResult(calculateDiff(newList))
     }
@@ -47,11 +51,17 @@ abstract class AbstractAdapter<ITEM>(private var data: MutableList<ITEM>, privat
     private fun calculateDiff(newItems: List<ITEM>) =
             DiffUtil.calculateDiff(DiffUtilCallback(data, newItems))
 
+    /**
+     * 动态添加一个[ITEM]
+     */
     fun add(item: ITEM) {
         data.add(item)
         notifyItemInserted(data.size)
     }
 
+    /**
+     * 删除 Position 位置的数据.
+     */
     fun remove(position: Int) {
         data.removeAt(position)
         notifyItemRemoved(position)
@@ -63,10 +73,19 @@ abstract class AbstractAdapter<ITEM>(private var data: MutableList<ITEM>, privat
         onViewRecycled(holder.itemView)
     }
 
+    /**
+     * 某个 ItemView 被回收.
+     */
     abstract fun onViewRecycled(itemView: View)
 
+    /**
+     * @see [View.setOnClickListener]
+     */
     abstract fun onItemClick(itemView: View, itemPosition: Int)
 
+    /**
+     * Bind [ITEM] to ItemView
+     */
     abstract fun View.bind(item: ITEM)
 
 
